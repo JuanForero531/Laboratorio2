@@ -22,29 +22,37 @@
   <script>
     document.getElementById('uploadForm').addEventListener('submit', async function(event) {
       event.preventDefault();
-      
+  
       const formData = new FormData();
       const imageInput = document.getElementById('imageInput').files[0];
       if (!imageInput) {
         alert('Por favor, selecciona una imagen.');
         return;
       }
-
+  
       formData.append('image', imageInput);
-      
-      const response = await fetch('http://localhost:4000/request', {
+  
+      const response = await fetch('http://localhost:3000/upload', {
         method: 'POST',
         body: formData
       });
-
+  
       if (response.ok) {
-        const resultImage = document.getElementById('resultImage');
-        resultImage.src = URL.createObjectURL(await response.blob());
-        resultImage.style.display = 'block';
+        const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = 'watermarked.jpg'; // Nombre del archivo que se descargará
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
       } else {
         alert('Error al procesar la imagen.');
       }
     });
+  </script>
+  
+
   </script>
 </body>
 </html>
